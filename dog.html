@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friendship Verification Department</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+        body { font-family: 'Comic Neue', cursive; background-color: #fefcf6; }
+        
+        /* Enforced 9:16 mobile-friendly card */
+        .canvas-card { 
+            width: 90vw; 
+            max-width: 400px; 
+            aspect-ratio: 9/16;
+            max-height: 80vh;
+            border-radius: 40px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .fade-in { animation: fadeIn 0.5s forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div id="app" class="canvas-card border-4 border-black bg-white shadow-[10px_10px_0px_rgba(0,0,0,0.1)] p-6 text-center">
+        <!-- Content injected here -->
+    </div>
+
+    <script>
+        const app = document.getElementById('app');
+        let currentStep = 0;
+
+        const questions = [
+            { q: "Be honest. Why are you here?", a: ["Curiosity.", "I clicked everything.", "I was promised secrets.", "I have no idea."], msg: "Interesting. Your answer has been logged in our 'Mostly Harmless' folder." },
+            { q: "If we were trapped in an elevator, what happens first?", a: ["We make a plan.", "We panic professionally.", "We start telling random stories.", "We accept our new elevator-based lifestyle."], msg: "The Dog Committee is concerned about your lack of barking skills. Will work on that." },
+            { q: "Which friendship skill deserves more respect?", a: ["Listening.", "Remembering random details.", "Sending memes at the perfect moment.", "Existing quietly but reliably."], msg: "Suspiciously mature. You sound like you've been trained by a Golden Retriever." },
+            { q: "Pick your emergency friendship item.", a: ["Unlimited snacks.", "Emotional support dog.", "Teleportation device.", "A legally questionable amount of luck."], msg: "Excellent choice. If it's not a treat, is it even an emergency?" },
+            { q: "What is your biggest flaw?", a: ["Overthinking.", "Being too cool.", "Accidentally causing chaos.", "Existing in a society."], msg: "Ah, 'existing in a society.' The Dog Committee identifies with this struggle deeply. Ruff." }
+        ];
+
+        function showIntro() {
+            app.innerHTML = `
+                <div class="fade-in">
+                    <div class="text-8xl mb-4">🐕‍🦺</div>
+                    <h1 class="text-3xl font-bold text-orange-600 mb-2">Friendship Verification Department</h1>
+                    <p class="text-lg text-gray-600 mb-1">Please cooperate with the investigation. The dogs are watching.</p>
+                    <p class="text-xs text-gray-400 mb-8 italic">Failure to comply may result in a very stern look from a pug.</p>
+                    <button onclick="nextQuestion()" class="bg-orange-400 border-4 border-black px-8 py-3 rounded-2xl text-xl font-bold hover:bg-orange-500">Fine, I'll Participate</button>
+                </div>
+            `;
+        }
+
+        function nextQuestion() {
+            if (currentStep >= questions.length) {
+                showFinal();
+                return;
+            }
+            const q = questions[currentStep];
+            app.innerHTML = `
+                <div class="fade-in w-full px-4">
+                    <p class="text-sm font-bold text-gray-400 mb-2">Canine Investigation #${currentStep + 1}/5</p>
+                    <h2 class="text-2xl font-bold mb-6">${q.q}</h2>
+                    <div class="grid gap-3 w-full">
+                        ${q.a.map(opt => `<button onclick="handleAnswer(\`${q.msg.replace(/'/g, "\\'")}\`)" class="border-2 border-black p-3 rounded-xl hover:bg-orange-100 font-bold transition">${opt}</button>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleAnswer(msg) {
+            app.innerHTML = `
+                <div class="fade-in">
+                    <div class="text-6xl mb-4">🤨</div>
+                    <p class="text-xl font-bold mb-8">${msg}</p>
+                    <button onclick="nextQuestion()" class="bg-blue-400 border-4 border-black px-6 py-2 rounded-2xl font-bold">Next Question</button>
+                </div>
+            `;
+            currentStep++;
+        }
+
+        function showFinal() {
+            app.innerHTML = `
+                <div class="fade-in">
+                    <h2 class="text-xl font-bold mb-4 animate-pulse">Running final assessment of your treat-worthiness...</h2>
+                    <div class="h-2 w-48 bg-gray-200 rounded-full mb-8 overflow-hidden"><div class="h-full bg-orange-400 w-full"></div></div>
+                </div>
+            `;
+            setTimeout(() => {
+                app.innerHTML = `
+                    <div class="fade-in px-4">
+                        <div class="text-7xl mb-4">🐾</div>
+                        <h2 class="text-3xl font-bold text-orange-600 mb-4">Certified Pretty Decent Human</h2>
+                        <div class="text-lg mb-8 italic text-gray-700">
+                            <p>We checked the records. You seem funny, occasionally intelligent, and surprisingly tolerable.</p>
+                            <p class="mt-4 text-sm font-bold">In all seriousness, you're the rare kind of human who makes the world less ruff. Don't let it go to your head, though.</p>
+                        </div>
+                        <a href="sur.html" class="bg-pink-400 border-4 border-black px-8 py-4 rounded-2xl text-xl font-bold hover:bg-pink-500 w-full block">SURPRISE!</a>
+                    </div>
+                `;
+            }, 2000);
+        }
+
+        showIntro();
+    </script>
+</body>
+</html>
