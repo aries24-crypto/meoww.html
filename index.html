@@ -1,1 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meow.html Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+        body { font-family: 'Comic Neue', cursive; background-color: #fdf6ff; }
+        .star-key {
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            transition: transform 0.1s;
+        }
+        .star-key:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
 
+    <div class="border-4 border-black rounded-[50px] p-8 w-full max-w-sm bg-white shadow-[10px_10px_0px_rgba(0,0,0,0.1)] relative overflow-hidden">
+        
+        <h1 class="text-3xl font-bold text-center mb-4 text-purple-600">MEOW.HTML<br>PORTAL</h1>
+        
+        <div class="flex flex-col items-center mb-6">
+            <div class="w-32 h-32 rounded-full border-4 border-pink-300 p-1 mb-2 overflow-hidden">
+                <img src="meow.png" alt="Cat" class="w-full h-full object-cover rounded-full" onerror="this.src='https://placekitten.com/200/200'">
+            </div>
+            <p class="text-sm font-bold">click to...</p>
+        </div>
+
+        <div class="border-2 border-black rounded-xl p-4 mb-8 bg-yellow-50">
+            <p class="text-sm font-bold mb-2">ENTER THE SECRET CODE!</p>
+            <div id="display" class="text-2xl tracking-[0.5em] h-8 border-b-2 border-dashed border-gray-400">____</div>
+        </div>
+
+        <div id="keypad" class="grid grid-cols-3 gap-4">
+            <!-- Stars generated via JS -->
+        </div>
+
+        <div id="status" class="mt-8 text-center text-xl font-bold text-green-600 h-8">
+            STATUS: READY TO GO!
+        </div>
+    </div>
+
+    <script>
+        const codeDisplay = document.getElementById('display');
+        const statusDisplay = document.getElementById('status');
+        let currentInput = "";
+        const secretCode = "1234";
+
+        const starColors = ['bg-yellow-400', 'bg-cyan-400', 'bg-pink-400', 'bg-orange-400', 'bg-green-400', 'bg-purple-400', 'bg-blue-300', 'bg-pink-300', 'bg-green-300', 'bg-yellow-300'];
+        const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+
+        const keypad = document.getElementById('keypad');
+        numbers.forEach((num, i) => {
+            const btn = document.createElement('button');
+            btn.className = `star-key ${starColors[i]} w-20 h-20 flex items-center justify-center text-2xl font-bold text-black`;
+            btn.textContent = num;
+            btn.onclick = () => handleInput(num);
+            keypad.appendChild(btn);
+        });
+
+        function handleInput(num) {
+            if (currentInput.length < 4) {
+                currentInput += num;
+                codeDisplay.textContent = "*".repeat(currentInput.length);
+                
+                if (currentInput.length === 4) {
+                    if (currentInput === secretCode) {
+                        statusDisplay.textContent = "ACCESS GRANTED MEOWW";
+                        setTimeout(() => {
+                            window.location.href = "alt.html";
+                        }, 2000);
+                    } else {
+                        statusDisplay.textContent = "TRY AGAIN MEOW!";
+                        currentInput = "";
+                        setTimeout(() => {
+                            codeDisplay.textContent = "____";
+                            statusDisplay.textContent = "STATUS: READY TO GO!";
+                        }, 1000);
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
