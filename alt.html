@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret World of Meow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+        body { font-family: 'Comic Neue', cursive; background-color: #fdf6ff; overflow-x: hidden; touch-action: manipulation; }
+        .canvas-card { width: 90vw; max-width: 400px; height: 80vh; border-radius: 40px; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .pulse-btn { animation: pulse 2s infinite; }
+        .hidden-element { opacity: 0; pointer-events: none; transition: opacity 1s; }
+        .game-item { transition: all 0.2s; cursor: pointer; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-2">
+
+    <div class="canvas-card border-4 border-black bg-white shadow-[10px_10px_0px_rgba(0,0,0,0.1)] relative overflow-hidden flex flex-col items-center p-4">
+        
+        <!-- Header -->
+        <div class="text-center mt-4">
+            <h1 class="text-2xl font-bold text-purple-600" id="message-wall">Glad you're here.</h1>
+        </div>
+
+        <!-- Cat Area -->
+        <div id="cat-zone" class="relative flex-1 flex flex-col items-center justify-center">
+            <div id="cat" class="text-8xl select-none cursor-pointer hover:scale-110 transition-transform">🐱</div>
+            <div id="yarn" class="text-4xl absolute hidden cursor-pointer">🧶</div>
+            <div id="score" class="absolute top-0 text-xl font-bold text-pink-500 hidden">Score: 0</div>
+        </div>
+
+        <!-- Compliment/Game UI -->
+        <div class="space-y-2 w-full px-4 mb-4">
+            <button onclick="giveMotivation()" class="w-full bg-yellow-300 border-2 border-black py-2 rounded-xl text-sm font-bold">Need motivation?</button>
+            <button onclick="startGame()" class="w-full bg-green-300 border-2 border-black py-2 rounded-xl text-sm font-bold" id="start-btn">Catch the Yarn!</button>
+        </div>
+
+        <!-- Friendship Meter -->
+        <div class="w-full px-4 mb-4">
+            <p class="text-xs font-bold mb-1">Friendship Level:</p>
+            <div class="w-full bg-gray-200 h-4 rounded-full border-2 border-black overflow-hidden">
+                <div id="meter" class="h-full bg-pink-400 w-[95%]"></div>
+            </div>
+        </div>
+
+        <!-- Next Button -->
+        <div id="next-container" class="hidden-element pb-4">
+            <a href="dog.html" class="pulse-btn inline-block bg-pink-400 border-4 border-black px-8 py-3 rounded-2xl text-lg font-bold hover:bg-pink-500">Continue the Adventure →</a>
+        </div>
+    </div>
+
+    <script>
+        const cat = document.getElementById('cat');
+        const yarn = document.getElementById('yarn');
+        const scoreEl = document.getElementById('score');
+        const wall = document.getElementById('message-wall');
+        let score = 0;
+        let gameActive = false;
+
+        // Compliments
+        const compliments = ["You're doing better than you think.", "Someone's lucky to have you around.", "Even the cat believes in you.", "You are a secret finder extraordinaire!"];
+        function giveMotivation() {
+            wall.textContent = compliments[Math.floor(Math.random() * compliments.length)];
+        }
+
+        // Game Logic
+        function startGame() {
+            gameActive = true;
+            score = 0;
+            scoreEl.textContent = "Score: 0";
+            scoreEl.classList.remove('hidden');
+            document.getElementById('start-btn').classList.add('hidden');
+            spawnYarn();
+        }
+
+        function spawnYarn() {
+            if(!gameActive) return;
+            yarn.style.left = Math.random() * 80 + '%';
+            yarn.style.top = Math.random() * 50 + 20 + '%';
+            yarn.classList.remove('hidden');
+        }
+
+        yarn.addEventListener('click', () => {
+            score++;
+            scoreEl.textContent = "Score: " + score;
+            if(score >= 5) {
+                gameActive = false;
+                yarn.classList.add('hidden');
+                wall.textContent = "The cat rates your reflexes 9/10!";
+                document.getElementById('start-btn').classList.remove('hidden');
+            } else {
+                spawnYarn();
+            }
+        });
+
+        // Easter Egg: Cat click
+        cat.addEventListener('click', () => {
+            cat.textContent = Math.random() > 0.5 ? '😸' : '😺';
+            setTimeout(() => cat.textContent = '🐱', 500);
+        });
+
+        // Show button after 5s
+        setTimeout(() => {
+            document.getElementById('next-container').classList.remove('hidden-element');
+        }, 5000);
+
+        // Cycle messages
+        const msgs = ["Glad you're here.", "You found the secret route.", "Not everyone would have discovered this.", "The adventure isn't over yet."];
+        let idx = 0;
+        setInterval(() => {
+            idx = (idx + 1) % msgs.length;
+            wall.textContent = msgs[idx];
+        }, 4000);
+    </script>
+</body>
+</html>
