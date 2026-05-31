@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+        body { font-family: 'Comic Neue', cursive; background: radial-gradient(circle at center, #2d1b4e 0%, #0f0f1a 100%); color: white; overflow: hidden; perspective: 1000px; }
+        
+        /* 3D Envelope Container */
+        .scene { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .envelope { width: 280px; height: 200px; background: #fff; border-radius: 10px; position: relative; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; transform-style: preserve-3d; }
+        .envelope.open { transform: scale(1.5) rotateY(180deg) opacity: 0; }
+        .flap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-top: 100px solid #ddd; border-left: 140px solid transparent; border-right: 140px solid transparent; transition: transform 0.6s; transform-origin: top; }
+        .flap.opened { transform: rotateX(180deg); }
+
+        /* Glassmorphism Letter - Updated with black text for visibility */
+        .letter { position: fixed; top: 10%; left: 10%; width: 80%; height: 80%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); border-radius: 40px; padding: 2rem; opacity: 0; pointer-events: none; transition: opacity 1s; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: auto; color: black; }
+        .letter.visible { opacity: 1; pointer-events: all; }
+
+        .particle { position: absolute; pointer-events: none; border-radius: 50%; opacity: 0.8; z-index: 50; }
+        .fade-in { opacity: 0; transition: opacity 1s ease-in; }
+        .visible { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <div class="scene" id="scene">
+        <div class="envelope" id="envelope" onclick="openEnvelope()">
+            <div class="flap" id="flap"></div>
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-black font-bold">
+                <p>Final Report Ready.</p>
+                <p class="text-xs opacity-60">Click to open.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="letter" id="letter">
+        <div id="content-area" class="w-full h-full flex flex-col items-center justify-center text-center">
+            <div id="messages" class="text-2xl font-bold italic space-y-6"></div>
+            <div id="diagnostics" class="hidden space-y-2 mt-8 text-left w-full max-w-xs font-mono text-sm opacity-80"></div>
+            <div id="finale" class="hidden mt-12 animate-bounce">
+                <h2 class="text-4xl font-bold text-black">Good Luck, You Idiot ❤️</h2>
+                <p class="text-sm opacity-60 mt-2">(Affectionate.)</p>
+            </div>
+            <a href="index.html" id="play-again" class="hidden mt-12 bg-black text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-transform animate-pulse">Play Again ↺</a>
+        </div>
+    </div>
+
+    <script>
+        const envelope = document.getElementById('envelope');
+        const flap = document.getElementById('flap');
+        const letter = document.getElementById('letter');
+        const msgDiv = document.getElementById('messages');
+        const diagDiv = document.getElementById('diagnostics');
+        const finale = document.getElementById('finale');
+        const btn = document.getElementById('play-again');
+
+        const sequence = ["Congratulations.", "You have successfully completed the Friendship Verification Program.", "This achievement is worth absolutely nothing.", "Well...", "Maybe not absolutely nothing."];
+        const diagnostics = ["Humor Level ........ PASS", "Chaos Potential ..... HIGH", "Questionable Decisions ..... DETECTED", "Road Trip Compatibility ..... EXCELLENT", "Villain Arc Probability ..... LOW", "Friendship Rating ..... SUSPICIOUSLY GOOD"];
+        const heartfelt = ["Jokes aside.", "Life gets weird.", "It gets messy.", "People change.", "Plans fail.", "But honestly...", "I hope you do well.", "I hope the things you're working toward actually work out.", "The world already has enough boring people.", "Try not to become one.", "— from Tejas"];
+
+        async function openEnvelope() {
+            envelope.style.transform = "scale(0.8) translateY(-20px)";
+            flap.classList.add('opened');
+            await new Promise(r => setTimeout(r, 1000));
+            envelope.classList.add('open');
+            letter.classList.add('visible');
+            startReveal();
+        }
+
+        async function startReveal() {
+            for (let msg of sequence) {
+                await addMsg(msg, 1500);
+            }
+            msgDiv.innerHTML = "";
+            
+            diagDiv.classList.remove('hidden');
+            for (let d of diagnostics) {
+                const p = document.createElement('p');
+                p.textContent = d;
+                diagDiv.appendChild(p);
+                await new Promise(r => setTimeout(r, 600));
+            }
+            await new Promise(r => setTimeout(r, 1500));
+            diagDiv.classList.add('hidden');
+
+            for (let msg of heartfelt) {
+                await addMsg(msg, 1200);
+            }
+            msgDiv.innerHTML = "";
+            finale.classList.remove('hidden');
+            btn.classList.remove('hidden');
+            triggerConfetti();
+        }
+
+        async function addMsg(text, delay) {
+            const p = document.createElement('p');
+            p.className = 'fade-in';
+            p.textContent = text;
+            msgDiv.appendChild(p);
+            setTimeout(() => p.classList.add('visible'), 50);
+            await new Promise(r => setTimeout(r, delay));
+            p.classList.remove('visible');
+            await new Promise(r => setTimeout(r, 800));
+        }
+
+        function triggerConfetti() {
+            for(let i=0; i<80; i++) {
+                const c = document.createElement('div');
+                c.className = 'particle bg-' + ['pink-400', 'yellow-400', 'blue-400'][i%3];
+                c.style.width = '12px'; c.style.height = '12px';
+                c.style.left = Math.random() * 100 + '%';
+                c.style.top = '-5%';
+                document.body.appendChild(c);
+                c.animate([{transform: `translateY(0) rotate(0)`}, {transform: `translateY(100vh) rotate(360deg)`}], {duration: 3000, easing: 'ease-out'}).onfinish = () => c.remove();
+            }
+        }
+    </script>
+</body>
+</html>
